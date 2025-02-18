@@ -34,5 +34,5 @@ print(data.describe()) #tells about mean, percentiles, etc
 
 sns.distplot(data['target']);
 plt.show()
-print("skewness: %f" % data['target'].skew)
-print("kurtosis: %f" % data['target'.kurt])
+print("skewness: %f" % data['target'].skew())
+print("kurtosis: %f" % data['target'].kurt())
