@@ -176,7 +176,7 @@ models = {
 }
 
 # %%
-# Function to test models
+# Function train models
 def test_model(model, X_train=x_scaled, y_train=y):
     cv = KFold(n_splits=7, shuffle=True, random_state=45)
     r2 = make_scorer(r2_score)
@@ -184,7 +184,7 @@ def test_model(model, X_train=x_scaled, y_train=y):
     return r2_val_score  # Returns an array of scores
 
 # %%
-# Train and evaluate models
+# Train models
 models_score = []
 for key, (name, model) in models.items():
     print(f"Training model: {name}")
@@ -250,4 +250,15 @@ plt.show()
 import joblib
 joblib.dump(best_xgb, "xgboost_model.pkl")
 
+# %%
+# Load the trained model
+xgbr_loaded = joblib.load("xgboost_model.pkl")
+
+# Predict on test data
+y_pred = xgbr_loaded.predict(xt_scaled)  # xt_scaled is your scaled test set
+
+# Display results
+print("Predicted values:", y_pred[:10])  # Show first 10 predictions
+print("Actual values:", yt[:10])  # Compare with actual values
+      
 # %%
