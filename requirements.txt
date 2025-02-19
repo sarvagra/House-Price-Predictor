@@ -1,0 +1,7 @@
+uvicorn
+fastapi
+uvicorn
+numpy
+joblib
+xgboost
+gunicorn
