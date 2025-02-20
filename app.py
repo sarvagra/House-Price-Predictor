@@ -1,4 +1,5 @@
-from fastapi import FastAPI, Form
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 import joblib
 import numpy as np
 from pydantic import BaseModel
@@ -8,6 +9,15 @@ model = joblib.load("xgboost_model.pkl")
 
 # Initialize FastAPI app
 app = FastAPI()
+
+# Enable CORS for frontend access
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Adjust to specific domains in production
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 class HouseFeatures(BaseModel):
     MedInc: float
@@ -26,24 +36,18 @@ def home():
 @app.post("/predict")
 def predict_price(features: HouseFeatures):
     try:
-        # Convert input to model-compatible format
         input_data = np.array([
             features.MedInc, features.HouseAge, features.AveRooms, 
             features.AveBedrms, features.Population, features.AveOccup, 
             features.Latitude, features.Longitude
         ]).reshape(1, -1)
 
-        # Predict house price
         prediction = model.predict(input_data)
-
-        # Convert to Python float to avoid serialization issues
         return {"predicted_price": float(prediction[0])}
-
     except Exception as e:
         return {"error": str(e)}
 
-
+# Required for ASGI
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)
-
